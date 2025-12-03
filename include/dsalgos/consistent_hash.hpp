@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <cstdint>
 
+#include "dsalgos/murmurhash3.hpp"
+
 namespace dsalgos {
 
 /**
@@ -16,7 +18,7 @@ namespace dsalgos {
  *
  * Template parameters:
  *   NodeId - type used to identify a physical node (e.g. std::string, int, etc.)
- *   Hash   - hash functor that hashes std::string (default: std::hash<std::string>)
+ *   Hash   - hash functor that hashes std::string
  *
  * Design:
  *   - We store a sorted map<hash_value, NodeId> to represent the ring.
@@ -24,7 +26,7 @@ namespace dsalgos {
  *   - For a given key, we hash the key, find the first hash >= key_hash,
  *     and if none exists, wrap to begin() (ring behavior).
  */
-template <typename NodeId, typename Hash = std::hash<std::string>>
+template <typename NodeId, typename Hash = MurmurHash64>
 class ConsistentHashRing {
 public:
     explicit ConsistentHashRing(std::size_t virtual_nodes = 100, Hash hash = Hash())

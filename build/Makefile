@@ -117,19 +117,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named dsalgos
-
-# Build rule for target.
-dsalgos: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dsalgos
-.PHONY : dsalgos
-
-# fast build rule for target.
-dsalgos/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsalgos.dir/build.make CMakeFiles/dsalgos.dir/build
-.PHONY : dsalgos/fast
-
-#=============================================================================
 # Target rules for targets named bloom_demo
 
 # Build rule for target.
@@ -175,7 +162,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... bloom_demo"
-	@echo "... dsalgos"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

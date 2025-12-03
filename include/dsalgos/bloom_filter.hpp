@@ -5,6 +5,9 @@
 #include <vector>
 #include <functional>
 #include <stdexcept>
+#include <utility>
+
+#include "dsalgos/murmurhash3.hpp"
 
 namespace dsalgos {
 
@@ -30,10 +33,17 @@ inline size_t compute_k(size_t m, size_t n) {
     );
 }
 
+/**
+ * Generic Bloom Filter.
+ *
+ * T      - key type
+ * Hasher - functor type: size_t or uint64_t operator()(const T&)
+ */
 template <typename T, typename Hasher = std::hash<T>>
 class BloomFilter {
 public:
-    BloomFilter(size_t expected_items, double false_positive_prob,
+    BloomFilter(size_t expected_items,
+                double false_positive_prob,
                 Hasher hasher = Hasher())
         : m_bits(0),
           k_hashes(0),
@@ -100,7 +110,7 @@ private:
 
     std::pair<uint64_t, uint64_t> base_hashes(const T& item) const {
         uint64_t h1 = static_cast<uint64_t>(hasher_(item));
-        // simple secondary mix derived from h1
+        // derive a second hash from h1 (double hashing technique)
         uint64_t h2 = h1;
         h2 ^= (h2 >> 33);
         h2 *= 0xff51afd7ed558ccdULL;
