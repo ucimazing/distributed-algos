@@ -1,29 +1,76 @@
 cmake_minimum_required(VERSION 3.16)
 
-# 1. Name of the project
+# -------------------------------
+# Project Setup
+# -------------------------------
 project(distributed_systems_algos_cpp LANGUAGES CXX)
 
-# 2. Use C++17
+# Use C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 3. Header-only library target for our algorithms
+# -------------------------------
+# FetchContent for Google Benchmark
+# -------------------------------
+include(FetchContent)
+
+# Disable Google Benchmark tests (faster build)
+set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "" FORCE)
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+
+FetchContent_Declare(
+        google_benchmark
+        GIT_REPOSITORY https://github.com/google/benchmark.git
+        GIT_TAG v1.8.3
+)
+
+FetchContent_MakeAvailable(google_benchmark)
+
+# -------------------------------
+# Header-only library (dsalgos)
+# -------------------------------
 add_library(dsalgos INTERFACE)
 
-# 4. Tell CMake where to find headers when someone links this target
 target_include_directories(dsalgos
         INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-# 5. Executable that uses the library
+# -------------------------------
+# Demo Executable
+# -------------------------------
 add_executable(bloom_demo
         src/main.cpp
 )
 
-# 6. Link executable with the header-only library
 target_link_libraries(bloom_demo
         PRIVATE
         dsalgos
+)
+
+# -------------------------------
+# Benchmarks
+# -------------------------------
+
+# Bloom Filter Benchmark
+add_executable(bloom_bench
+        benchmarks/bloom_bench.cpp
+)
+
+target_link_libraries(bloom_bench
+        PRIVATE
+        dsalgos
+        benchmark::benchmark
+)
+
+# Consistent Hash Benchmark
+add_executable(consistent_hash_bench
+        benchmarks/consistent_hash_bench.cpp
+)
+
+target_link_libraries(consistent_hash_bench
+        PRIVATE
+        dsalgos
+        benchmark::benchmark
 )
