@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/Users/umeshdas/Coding/projects/distributed-algos/build/_deps/google_benchmark-subbuild/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
